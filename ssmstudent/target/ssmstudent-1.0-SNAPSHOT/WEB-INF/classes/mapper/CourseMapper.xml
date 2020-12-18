@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datealive.mapper.CourseMapper">
+
+   <select id="getCourseList" resultType="com.datealive.entity.Course">
+       select * from s_course
+       <where>
+           <if test="course.name != null">
+               name like '%'#{course.name}'%'
+           </if>
+           <if test="course.teacher_id != 0">
+               teacher_id =#{course.teacher_id}
+           </if>
+       </where>
+       limit #{page},#{limit}
+   </select>
+
+    <select id="getCourseListTotal" resultType="Integer">
+        select count(*) as total from s_course
+        <where>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="teacher_id != 0">
+                teacher_id = #{teacher_id}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addCourse" parameterType="com.datealive.entity.Course">
+        insert into s_course values (
+        null,#{name}, #{teacher_id}, #{course_date}, #{selected_num}, #{max_num}, #{cgrade}
+        )
+    </insert>
+
+    <update id="editCourse" parameterType="com.datealive.entity.Course">
+        update s_course set name = #{name}, teacher_id = #{teacher_id}, course_date = #{course_date},
+        selected_num = #{selected_num}, max_num = #{max_num}, cgrade = #{cgrade}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCourse" parameterType="list">
+        delete from s_course
+        <if test="ids != null">
+            where id in
+            <foreach collection="ids" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="isFull" resultType="Integer">
+        select count(*) as total from s_course
+        where selected_num >= max_num and id = #{course_id}
+    </select>
+
+    <update id="updateCourseSelectedNum" parameterType="integer">
+        update s_course set selected_num = selected_num + 1
+        where id = #{course_id}
+    </update>
+
+    <update id="updateCourseSelectedNumDe" parameterType="Integer">
+        update s_course set selected_num = selected_num - 1
+        where id = #{course_id}
+    </update>
+
+
+</mapper>

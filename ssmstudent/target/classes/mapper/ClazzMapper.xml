@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datealive.mapper.ClazzMapper">
+
+    <select id="getClazzList" resultType="com.datealive.entity.Clazz">
+        select * from s_clazz
+        <where>
+            <if test="clazz1.id != 0">
+                id = #{clazz1.id}
+            </if>
+            <if test="clazz1.name != null">
+                and name like "%"#{clazz1.name}"%"
+            </if>
+        </where>
+        limit #{page},#{limit}
+    </select>
+
+    <select id="getClazzListTotal" resultType="Integer">
+        select count(*) as total from s_clazz
+        <where>
+            <if test="name !=null">
+                name like "%"#{name}"%"
+            </if>
+        </where>
+    </select>
+
+    <update id="editClazz" parameterType="com.datealive.entity.Clazz">
+        update s_clazz set name = #{name},info = #{info} where id = #{id}
+    </update>
+
+    <insert id="addClazz" parameterType="com.datealive.entity.Clazz">
+        insert into s_clazz(name,info) values (#{name},#{info})
+    </insert>
+
+    <delete id="deleteClazzAll" parameterType="list">
+        delete from s_clazz
+        <if test="ids != null">
+            where id in
+            <foreach collection="ids" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteClazz">
+        delete from s_clazz where id = #{id}
+    </delete>
+
+
+
+</mapper>

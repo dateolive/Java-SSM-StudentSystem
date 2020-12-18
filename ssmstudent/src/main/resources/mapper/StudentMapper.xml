@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datealive.mapper.StudentMapper">
+
+    <sql id="Base_column">
+        id, sn, name, password, clazz_id, sex, mobile, age
+    </sql>
+    
+    <select id="queryStudent" resultType="com.datealive.entity.Student">
+        select * from s_student where name = #{name} and password = #{password};
+    </select>
+
+    <select id="getStudentList" resultType="com.datealive.entity.Student">
+        SELECT stu.id as id,stu.sn as sn,stu.name as name,stu.sex as sex,stu.mobile as mobile,stu.age as age,stu.clazz_id as clazz_id ,ifnull(SUM(scourse.score_id),0) as totalgrade
+        FROM
+        s_student as stu
+        LEFT JOIN
+        s_selected_course as scourse ON stu.id=scourse.student_id
+        LEFT JOIN
+        s_course as course ON course.id=scourse.course_id
+        <where>
+            <if test="student.name != null">
+                stu.name = #{student.name}
+            </if>
+            <if test="student.clazz_id != 0">
+                and stu.clazz_id = #{student.clazz_id}
+            </if>
+            <if test="student.id != 0">
+                and stu.id = #{student.id}
+            </if>
+        </where>
+        GROUP  BY id
+        limit #{page},#{limit}
+    </select>
+
+    <select id="getStudentListTotal" resultType="Integer" parameterType="com.datealive.entity.Student">
+        select count(*) as total from s_student
+        <where>
+            <if test="name != null">
+                name = #{name}
+            </if>
+            <if test="clazz_id != 0">
+                and clazz_id = #{clazz_id}
+            </if>
+            <if test="id != 0">
+                and id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addStudent" parameterType="com.datealive.entity.Student">
+        insert into s_student values (
+        null, #{sn}, #{name}, #{password}, #{clazz_id}, #{sex}, #{mobile}, #{age}
+        )
+    </insert>
+
+    <update id="editStudent" parameterType="com.datealive.entity.Student">
+        update s_student
+        set name=#{name}, sex=#{sex}, mobile=#{mobile}, age=#{age}, clazz_id=#{clazz_id}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteStudent" parameterType="list">
+        delete from s_student
+        <if test="ids != null">
+            where id in
+            <foreach collection="ids" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <update id="editPassword">
+        update s_student set password = #{newPwd}
+        where id = #{student.id}
+    </update>
+
+
+</mapper>

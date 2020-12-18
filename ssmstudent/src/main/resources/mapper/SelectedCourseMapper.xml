@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datealive.mapper.SelectedCourseMapper">
+
+  <select id="getSelectedCourseList" resultType="com.datealive.entity.SelectedCourse">
+      select * from s_selected_course
+      <where>
+          <if test="selectedCourse.student_id != 0">
+              student_id = #{selectedCourse.student_id}
+          </if>
+          <if test="selectedCourse.course_id !=0">
+             and course_id = #{selectedCourse.course_id}
+          </if>
+          <if test="selectedCourse.teacher_id">
+             and teacher_id = #{selectedCourse.teacher_id}
+          </if>
+      </where>
+      limit #{page},#{limit}
+  </select>
+
+    <select id="getSelectedCourseById" parameterType="Integer" resultType="com.datealive.entity.SelectedCourse">
+        select * from s_selected_course
+        where id = #{id}
+    </select>
+
+    <select id="getSelectedCourseListTotal" resultType="Integer">
+        select count(*) as total from s_selected_course
+        <where>
+            <if test="student_id != 0">
+                student_id = #{student_id}
+            </if>
+            <if test="course_id !=0">
+                and course_id = #{course_id}
+            </if>
+            <if test="teacher_id">
+                and teacher_id = #{teacher_id}
+            </if>
+        </where>
+    </select>
+
+    <select id="isSelected" resultType="Integer">
+        select count(*) as total from s_selected_course
+        where student_id = #{student_id} and course_id = #{course_id}
+    </select>
+
+    <select id="addSelectedCourse" parameterType="com.datealive.entity.SelectedCourse">
+        insert into s_selected_course (student_id,course_id,teacher_id) values (
+        #{student_id}, #{course_id}, #{teacher_id}
+        )
+    </select>
+
+    <delete id="deleteSelectedCourse" parameterType="list">
+        delete from s_selected_course
+        <if test="ids != null">
+            where id in
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <delete id="deleteSelectedCourseById" parameterType="Integer">
+        delete from s_selected_course
+        where id = #{id}
+    </delete>
+
+    <update id="editSelectedCourse" parameterType="com.datealive.entity.SelectedCourse">
+        update s_selected_course set score_id = #{score_id}
+        where id = #{id}
+    </update>
+
+
+
+
+
+</mapper>

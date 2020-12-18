@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.datealive.mapper.TeacherMapper">
+
+    <select id="queryTeacher" resultType="com.datealive.entity.Teacher">
+        select * from s_teacher where name = #{name} and password = #{password};
+    </select>
+
+    <select id="getTeacherList" resultType="com.datealive.entity.Teacher">
+        select * from s_teacher
+        <where>
+            <if test="teacher.name != null">
+                name = #{teacher.name}
+            </if>
+            <if test="teacher.clazz_id != 0">
+                and clazz_id = #{teacher.clazz_id}
+            </if>
+            <if test="teacher.id != 0">
+                and id = #{teacher.id}
+            </if>
+        </where>
+        limit #{page},#{limit}
+    </select>
+
+    <select id="getTeacherListTotal" resultType="Integer">
+        select count(*) as total from s_teacher
+        <where>
+            <if test="name != null">
+                name =#{name}
+            </if>
+            <if test="clazz_id != 0">
+                and clazz_id = #{clazz_id}
+            </if>
+            <if test="id != 0">
+                and id = #{id}
+            </if>
+        </where>
+
+    </select>
+
+    <insert id="addTeacher" parameterType="com.datealive.entity.Teacher">
+        insert into s_teacher values (
+        null,#{sn}, #{name}, #{password}, #{clazz_id} ,#{sex}, #{tposition}, #{salary}
+        )
+    </insert>
+
+    <update id="editTeacher" parameterType="com.datealive.entity.Teacher">
+        update s_teacher
+        set name = #{name}, sex = #{sex}, tposition = #{tposition}, salary=#{salary}, clazz_id=#{clazz_id}
+        where id= #{id}
+    </update>
+
+    <delete id="deleteTeacher" parameterType="list">
+        delete from s_teacher
+        <if test="ids != null">
+            where id in
+            <foreach collection="ids" open="(" close=")" separator="," item="id">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <update id="editPassword">
+        update s_teacher set password = #{newPwd}
+        where id = #{teacher.id}
+    </update>
+
+
+
+</mapper>

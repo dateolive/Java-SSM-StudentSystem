@@ -1,0 +1,14 @@
+{
+	"cmsName": "学生选课管理系统",
+	"version": "v1.0",
+	"author": "datealive",
+	"homePage": "view/system.html",
+	"server": "windows",
+	"dataBase": "8.00.2039",
+	"maxUpload": "2M",
+	"userRights": "无权限",
+	"description": "这是基于layui的cms模版的学生选课系统",
+	"powerby": "copyright datealive",
+	"record": "京ICP备14040xxx号-1",
+	"keywords": "加油"
+}
